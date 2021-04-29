@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
         <!-- Requisition form -->
         <record model="ir.ui.view" id="po_requisition_form" >
@@ -11,11 +10,10 @@
                     <header>
                         <button confirm="Are you sure you want to Approve this Requsition?" 
                         name="action_approve_po_requisition" 
-                        states="draft" string="Approve" type="object" class="oe_highlight" 
-                        groups="requisitions.group_manager"/>
+                        states="draft" string="Approve" type="object" class="oe_highlight"/>
                         <button name="cancel"
                         confirm="Are you sure you want to cancel this Requisition?"
-                        states="draft" string="Cancel" type="object"/>
+                        states="draft" string="Reject" type="object"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -79,7 +77,6 @@
         <record model="ir.actions.act_window" id="po_requisition_action" >
             <field name="name">Requisition</field>
             <field name="res_model">po.requisition</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
             <field name="help" type="html">
@@ -133,5 +130,4 @@
 
         <!-- Requisition menu -->
         <menuitem id="menu_procurement_management_po_requisition" name="Requisition" parent="purchase.menu_procurement_management" action="po_requisition_action" sequence="-1"/>
-    </data>
 </odoo>

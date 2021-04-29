@@ -19,9 +19,9 @@ class PurchaseOrder(models.Model):
 
 class Requisition(models.Model):
     _name = "po.requisition"
-    _inherit = ['mail.thread',]
+    _inherit = ['mail.thread']
 
-    @api.multi
+    @api.model
     def _po_count(self):
         attach = self.env['purchase.order']
         for po in self:
@@ -43,7 +43,7 @@ class Requisition(models.Model):
         'stock.warehouse', string='Warehouse', required=True, default=1)
     po_count = fields.Integer('RFQs/POs', compute=_po_count)
     total = fields.Float(string='Total', digits=dp.get_precision(
-        'Product Price'), compute=_calc_po_total)
+        'Product Price'))
     delivery_date = fields.Datetime(
         string='Delivery Date', required=True, index=True)
     # po_reference = fields.Many2one('purchase.order', string='PO Reference', track_visibility='always')
@@ -57,33 +57,7 @@ class Requisition(models.Model):
     order_line = fields.One2many('requisition.order.line', 'order_id', string='Order Lines', states={
                                  'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, track_visibility='always')
 
-    @api.multi
     def action_approve_po_requisition(self):
-        # po_data = {
-        #     'requisition_number': str(self.name),
-        #     'date_order': fields.datetime.now(),
-        #     'partner_id': self.partner_id.id,
-
-        # }
-
-        # po_line_list = list()        
-
-        # for item in unique_ids:            
-        #     po_line_list.append([0, False,
-        #         {
-        #             'name': line_item.product_id.product_tmpl_id.name,
-        #             'product_id': line_item.product_id.id,
-        #             'product_qty': line_item.product_qty,
-        #             'product_uom': line_item.product_uom.id,
-        #             'date_planned': fields.datetime.now(),
-        #             'price_unit': line_item.product_id.product_tmpl_id.standard_price,
-        #         }])
-
-        # po_data['order_line'] = po_line_list
-
-        # create PO
-        # po_env = self.env['purchase.order'].create(po_data)
-        # saved_po_id = po_env.create(po_data)
         if self.order_line:
             for rec in self:
                 unique_ids = []
@@ -120,12 +94,12 @@ class Requisition(models.Model):
                 })
         return True
 
-    @api.multi
     def cancel(self):
         for rec in self:
-            rec.write({'state':'cancel'})
+            rec.state = 'cancel'
 
-    @api.multi
+
+    @api.model
     def unlink(self):
         for rec in self:
             if rec.state in ('approve','cancel'):
