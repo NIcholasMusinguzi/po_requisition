@@ -60,8 +60,11 @@ class Requisition(models.Model):
     def action_approve_po_requisition(self):
         if self.order_line:
             for rec in self:
+                
                 unique_ids = []
                 for line_item in self.order_line:
+                    if not line.line_item.partner_id:
+                        raise UserError(_('Please Add Vendor/Spplier'))
                     if not (line_item.partner_id.id in unique_ids):
                         unique_ids.append(line_item.partner_id.id)
                 for item in unique_ids:
@@ -73,10 +76,10 @@ class Requisition(models.Model):
                         'requisition_id': self.id,
                     }
                     po_line_list = list()
-                    for line in records:
+                    for line in records:                        
                         po_line_list.append([0, False,
                             {
-                                'name': line.product_id.product_tmpl_id.name + " "+line.name ,
+                                'name': line.product_id.product_tmpl_id.name + " "+line.name if  line.name else line.product_id.product_tmpl_id.name,
                                 'product_id': line.product_id.id,
                                 'product_qty': line.product_qty,
                                 'product_uom': line.product_uom.id,
