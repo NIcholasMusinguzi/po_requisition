@@ -63,7 +63,7 @@ class Requisition(models.Model):
                 
                 unique_ids = []
                 for line_item in self.order_line:
-                    if not line.line_item.partner_id:
+                    if not line_item.partner_id:
                         raise UserError(_('Please Add Vendor/Spplier'))
                     if not (line_item.partner_id.id in unique_ids):
                         unique_ids.append(line_item.partner_id.id)
