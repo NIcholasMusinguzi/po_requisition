@@ -143,7 +143,7 @@ class RequisitionOrderLine(models.Model):
         'Product Price'))
     total = fields.Float(string='Total', digits=dp.get_precision(
         'Product Price'), compute=_calc_total)
-    partner_id = fields.Many2one('res.partner', string='Vendor/Supplier', required=True,
+    partner_id = fields.Many2one('res.partner', string='Vendor/Supplier',
                                  help="You can find a vendor by its Name, TIN, Email or Internal Reference.")
     
 
