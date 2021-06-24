@@ -76,12 +76,13 @@ class Requisition(models.Model):
                     for line in records:
                         po_line_list.append([0, False,
                             {
-                                'name': line.product_id.product_tmpl_id.name,
+                                'name': line.product_id.product_tmpl_id.name + " "+line.name ,
                                 'product_id': line.product_id.id,
                                 'product_qty': line.product_qty,
                                 'product_uom': line.product_uom.id,
                                 'date_planned': fields.datetime.now(),
                                 'price_unit': line.price_unit,
+                                # 'price_unit': line.price_unit,
                             }])
 
                     po_data['order_line'] = po_line_list
