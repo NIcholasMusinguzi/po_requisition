@@ -10,7 +10,7 @@
                     <header>
                         <button confirm="Are you sure you want to Approve this Requsition?" 
                         name="action_approve_po_requisition" 
-                        states="draft" string="Approve" type="object" class="oe_highlight"/>
+                        states="draft" string="SUBMIT TO RFQ/PO" type="object" class="oe_highlight"/>
                         <button name="cancel"
                         confirm="Are you sure you want to cancel this Requisition?"
                         states="draft" string="Reject" type="object"/>
