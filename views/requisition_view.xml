@@ -19,8 +19,6 @@
                     <sheet>
                          <div class="oe_left" style="width: 500px;">
                             <div class="oe_title" style="width: 390px;">
-                                <!-- <h1><label class="oe_edit_only" for="name" string="Requisition #"/>
-                                <field name="po_reference" readonly="1" class="oe_inline"/></h1> -->
                                 <h1><field name="name" readonly="1"/></h1>
                             </div>
                         </div>
@@ -34,9 +32,9 @@
                         <group>
                             <group>                                
                                 <field name="warehouse_id" invisible='1'/>
+                                <field name="currency"/>
                                 <field name="delivery_date" attrs="{'readonly': [('state', 'in', ('approve', 'cancel'))]}"/>
-                                <field name="partner_id" invisible='1'/>                                
-                                <!-- <field name="state" /> -->
+                                <field name="partner_id" invisible='1'/> 
                             </group>
                             <group>
                                 <field name="create_uid" string='Requested By' readonly='1'/>
@@ -47,7 +45,6 @@
                             <page string="Products">
                                 <field name="order_line" attrs="{'readonly': [('state', 'in', ('approve', 'cancel'))]}">
                                     <tree string="Purchase Order Lines" editable="bottom">
-                                        <!-- <field name="product_id" force_save="1"/> -->
                                         <field name="partner_id" string="Vendor/Supplier"/>
                                         <field name="product_id"/>
                                         <field name="product_qty"/>

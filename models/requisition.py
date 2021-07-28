@@ -44,9 +44,9 @@ class Requisition(models.Model):
     po_count = fields.Integer('RFQs/POs', compute=_po_count)
     total = fields.Float(string='Total', digits=dp.get_precision(
         'Product Price'))
+    currency = fields.Many2one('res.currency')
     delivery_date = fields.Datetime(
         string='Delivery Date', required=True, index=True)
-    # po_reference = fields.Many2one('purchase.order', string='PO Reference', track_visibility='always')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('approve', 'Approved'),
@@ -74,6 +74,7 @@ class Requisition(models.Model):
                         'date_order': fields.datetime.now(),
                         'partner_id': item,
                         'requisition_id': self.id,
+                        'currency_id': self.currency.id,
                     }
                     po_line_list = list()
                     for line in records:                        
