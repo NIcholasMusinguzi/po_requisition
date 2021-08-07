@@ -44,9 +44,9 @@ class Requisition(models.Model):
     po_count = fields.Integer('RFQs/POs', compute=_po_count)
     total = fields.Float(string='Total', digits=dp.get_precision(
         'Product Price'))
+    currency = fields.Many2one('res.currency')
     delivery_date = fields.Datetime(
         string='Delivery Date', required=True, index=True)
-    # po_reference = fields.Many2one('purchase.order', string='PO Reference', track_visibility='always')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('approve', 'Approved'),
@@ -60,28 +60,33 @@ class Requisition(models.Model):
     def action_approve_po_requisition(self):
         if self.order_line:
             for rec in self:
+                
                 unique_ids = []
                 for line_item in self.order_line:
+                    if not line_item.partner_id:
+                        raise UserError(_('Please Add Vendor/Spplier'))
                     if not (line_item.partner_id.id in unique_ids):
                         unique_ids.append(line_item.partner_id.id)
                 for item in unique_ids:
-                    records = self.env['requisition.order.line'].search([('partner_id', '=', item)])
+                    records = self.env['requisition.order.line'].search([('partner_id', '=', item),('order_id','=',rec.id)])
                     po_data = {
                         'requisition_number': str(self.name),
                         'date_order': fields.datetime.now(),
                         'partner_id': item,
                         'requisition_id': self.id,
+                        'currency_id': self.currency.id,
                     }
                     po_line_list = list()
-                    for line in records:
+                    for line in records:                        
                         po_line_list.append([0, False,
                             {
-                                'name': line.product_id.product_tmpl_id.name,
+                                'name': line.product_id.product_tmpl_id.name + " "+line.name if  line.name else line.product_id.product_tmpl_id.name,
                                 'product_id': line.product_id.id,
                                 'product_qty': line.product_qty,
                                 'product_uom': line.product_uom.id,
                                 'date_planned': fields.datetime.now(),
                                 'price_unit': line.price_unit,
+                                # 'price_unit': line.price_unit,
                             }])
 
                     po_data['order_line'] = po_line_list
@@ -139,7 +144,7 @@ class RequisitionOrderLine(models.Model):
         'Product Price'))
     total = fields.Float(string='Total', digits=dp.get_precision(
         'Product Price'), compute=_calc_total)
-    partner_id = fields.Many2one('res.partner', string='Vendor/Supplier', required=True,
+    partner_id = fields.Many2one('res.partner', string='Vendor/Supplier',
                                  help="You can find a vendor by its Name, TIN, Email or Internal Reference.")
     
 
