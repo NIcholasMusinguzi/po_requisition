@@ -42,6 +42,7 @@ class Requisition(models.Model):
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse', required=True, default=1)
     po_count = fields.Integer('RFQs/POs', compute=_po_count)
+    request_title = fields.Char(string="Request Title")
     total = fields.Float(string='Total', digits=dp.get_precision(
         'Product Price'))
     currency = fields.Many2one('res.currency')
