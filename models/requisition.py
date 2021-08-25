@@ -31,11 +31,11 @@ class Requisition(models.Model):
             po.po_count = po_count
         return True
     
-    @api.depends('order_line')
-    def _calc_po_total(self):
-        for rec in self:
-            for line in rec.order_line:
-                rec.total += line.total
+    # @api.depends('order_line')
+    # def _calc_po_total(self):
+    #     for rec in self:
+    #         for line in rec.order_line:
+    #             rec.total += line.total
 
     name = fields.Char('PO Requisition', default='/')
     user = fields.Many2one('res.users', 'Approved By')
@@ -43,8 +43,7 @@ class Requisition(models.Model):
         'stock.warehouse', string='Warehouse', required=True, default=1)
     po_count = fields.Integer('RFQs/POs', compute=_po_count)
     request_title = fields.Char(string="Request Title")
-    total = fields.Float(string='Total', digits=dp.get_precision(
-        'Product Price'))
+    total = fields.Float(string='Total',readonly=True, compute='_calc_all_totals', tracking=5)
     currency = fields.Many2one('res.currency')
     delivery_date = fields.Datetime(
         string='Delivery Date', required=True, index=True)
@@ -57,6 +56,16 @@ class Requisition(models.Model):
                                  help="You can find a vendor by its Name, TIN, Email or Internal Reference.")
     order_line = fields.One2many('requisition.order.line', 'order_id', string='Order Lines', states={
                                  'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, track_visibility='always')
+
+    @api.depends('order_line.total')
+    def _calc_all_totals(self):
+        for rec in self:
+            total = 0.0
+            for line in rec.order_line:
+                total += line.total
+            rec.update({
+                'total': total,
+            })
 
     def action_approve_po_requisition(self):
         if self.order_line:
@@ -147,6 +156,17 @@ class RequisitionOrderLine(models.Model):
         'Product Price'), compute=_calc_total)
     partner_id = fields.Many2one('res.partner', string='Vendor/Supplier',
                                  help="You can find a vendor by its Name, TIN, Email or Internal Reference.")
+
+    # amount_total = fields.Monetary(string='Total', store=True, readonly=True,
+    #     compute='_compute_amount',
+    #     inverse='_inverse_amount_total')
+
+    # def _compute_amount(self):
+    #     for order in self:
+    #         total = 0.0
+    #         for line in order.order_line:
+    #             total += line.total
+    #         order.amount_undiscounted = total
     
 
     @api.onchange('product_id')
