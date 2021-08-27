@@ -91,7 +91,7 @@ class Requisition(models.Model):
                     if not (line_item.partner_id.id in unique_ids):
                         unique_ids.append(line_item.partner_id.id)
                 for item in unique_ids:
-                    records = self.env['requisition.order.line'].search([('partner_id', '=', item)])
+                    records = self.env['requisition.order.line'].search([('partner_id', '=', item),('order_id','=',rec.id)])
                     po_data = {
                         'requisition_number': str(self.name),
                         'date_order': fields.datetime.now(),
