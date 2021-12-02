@@ -8,7 +8,7 @@
     'website': "https://github.com/shahjalalh",
     'category': 'Purchase',
     'version': '1.0',
-    'depends': ['base', 'account', 'purchase', 'stock'],
+    'depends': ['base', 'account', 'purchase', 'stock','po_requisition'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

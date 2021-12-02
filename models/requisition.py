@@ -75,8 +75,8 @@ class Requisition(models.Model):
                 for line_item in self.order_line:
                     if not line_item.partner_id:
                         raise UserError(_('Please Add Vendor/Spplier'))
-                    if not (line_item.partner_id.id in unique_ids):
-                        unique_ids.append(line_item.partner_id.id)
+                    # if not (line_item.partner_id.id in unique_ids):
+                    #     unique_ids.append(line_item.partner_id.id)
                 for item in unique_ids:
                     records = self.env['requisition.order.line'].search([('partner_id', '=', item),('order_id','=',rec.id)])
                     po_data = {
