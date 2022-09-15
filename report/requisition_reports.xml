@@ -6,8 +6,8 @@
             id="action_report_po_requisition" 
             model="po.requisition" 
             report_type="qweb-pdf"
-            name="requisitions.report_po_requisition" 
-            file="requisitions.report_po_requisition"
+            name="po_requisition.report_po_requisition" 
+            file="po_requisition.report_po_requisition"
             print_report_name="'PO Requisition - %s' % (object.name)"
         />
     </data>
