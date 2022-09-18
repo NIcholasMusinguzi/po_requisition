@@ -45,6 +45,7 @@ class Requisition(models.Model):
     request_title = fields.Char(string="Request Title")
     total = fields.Float(string='Total',readonly=True, compute='_calc_all_totals', tracking=5)
     currency = fields.Many2one('res.currency')
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     delivery_date = fields.Datetime(
         string='Delivery Date', required=True, index=True)
     state = fields.Selection([
@@ -57,6 +58,8 @@ class Requisition(models.Model):
     order_line = fields.One2many('requisition.order.line', 'order_id', string='Order Lines', states={
                                  'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, track_visibility='always')
 
+
+    
     @api.depends('order_line.total')
     def _calc_all_totals(self):
         for rec in self:
@@ -114,12 +117,12 @@ class Requisition(models.Model):
             rec.state = 'cancel'
 
 
-    @api.model
+    # @api.model
     def unlink(self):
         for rec in self:
             if rec.state in ('approve','cancel'):
                 raise UserError(_("You can only delet records in Draft State!"),_("Something is wrong!"),_("error"))               
-        return super(PurchaseOrder, self).unlink()
+        return super(Requisition, self).unlink()
 
     @api.model
     def create(self, values):
