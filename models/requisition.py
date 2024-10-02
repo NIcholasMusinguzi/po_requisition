@@ -43,7 +43,7 @@ class Requisition(models.Model):
         'stock.warehouse', string='Warehouse', required=True, default=1)
     po_count = fields.Integer('RFQs/POs', compute=_po_count)
     request_title = fields.Char(string="Request Title")
-    total = fields.Float(string='Total',readonly=True, compute='_calc_all_totals', tracking=5)
+    total = fields.Float(string='Total',readonly=True, compute='_calc_all_totals', tracking=True)
     currency = fields.Many2one('res.currency')
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     delivery_date = fields.Datetime(
@@ -189,18 +189,3 @@ class RequisitionOrderLine(models.Model):
 
 
 # Odoo 12: Error, a partner cannot follow twice the same object
-class Followers(models.Model):
-    _inherit = 'mail.followers'
-
-    @api.model
-    def create(self, vals):
-        if 'res_model' in vals and 'res_id' in vals and 'partner_id' in vals:
-            dups = self.env['mail.followers'].search([('res_model', '=',vals.get('res_model')), ('res_id', '=', vals.get('res_id')), ('partner_id', '=', vals.get('partner_id'))])
-            
-            if len(dups):
-                for p in dups:
-                    p.unlink()
-        
-        res = super(Followers, self).create(vals)
-        
-        return res
