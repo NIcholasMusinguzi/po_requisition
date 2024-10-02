@@ -136,6 +136,7 @@ class Requisition(models.Model):
 class RequisitionOrderLine(models.Model):
     _name = 'requisition.order.line'
     _description = 'Requisition Order Line'
+    _rec_name ="product_id"
     # _inherit = ['mail.thread',]
 
     @api.depends('product_qty','price_unit')
